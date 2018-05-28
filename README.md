@@ -5,13 +5,15 @@ Minimalist UI library for [elm-css](https://github.com/rtfeldman/elm-css), inspi
 Usage Example:
 
 ```elm
+import Styles exposing (..)
+
 main =
     header
         [ []
             |> cover "https://cldup.com/X45WwK6_8L.png"
             |> center
             |> fullscreen
-            |> css
+            |> toCSS
         ]
         [ content ]
         |> Html.Styled.toUnstyled
@@ -22,5 +24,5 @@ See more examples under `examples` folder.
 # Install
 
 ```bash
-$ elm-install azer/elm-ui-styles
+$ elm-package install azer/elm-ui-styles
 ```
