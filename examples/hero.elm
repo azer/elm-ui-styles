@@ -3,7 +3,6 @@ module Main exposing (..)
 import Styles exposing (fullscreen, cover, center, circle)
 import Html.Styled exposing (header, section, h1, img, text)
 import Html.Styled.Attributes exposing (css, src)
-import Css exposing (backgroundImage, url)
 
 
 main =
