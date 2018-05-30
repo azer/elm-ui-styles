@@ -4,7 +4,7 @@ Minimalist UI library for [elm-css](https://github.com/rtfeldman/elm-css), inspi
 
 Try the examples:
 
-* [Hero Background](https://ellie-app.com/mMDGLSWLqGa1)
+* [Hero Background](https://ellie-app.com/nccHcbS39pa1)
 * [Autogrid](https://ellie-app.com/n6QjGbrBYja1)
 * [Custom Grid](https://ellie-app.com/mP59YVqd8Va1)
 
