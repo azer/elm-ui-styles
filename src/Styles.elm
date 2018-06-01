@@ -35,17 +35,18 @@ Making an element full-size, centering its content and making the text uppercase
 @docs easein
 @docs easeout
 @docs equalGrid
+@docs fixed
 @docs fullscreen
 @docs gap
 @docs grid
 @docs maxWidth
 @docs minWidth
-@docs maxWidth
-@docs minWidth
 @docs position
 @docs rainbow
 @docs relative
+@docs rounded
 @docs shadow
+@docs sticky
 @docs stretch
 @docs whitebg
 @docs whitefg
@@ -285,6 +286,7 @@ defaultGap =
     }
 
 
+{-| Set inner (padding) and outer (margin) gap.-}
 gap : GapConfig -> List Css.Style -> List Css.Style
 gap config list =
     let
@@ -424,6 +426,7 @@ minWidth breakpoint styles list =
         ]
 
 
+{-| Config for setting position. -}
 type alias PositionConfig =
     { top : Length.Length
     , right : Length.Length
@@ -445,6 +448,7 @@ defaultPosition =
 
 {-| Set position properties "top" "left" "right" and "bottom"
 -}
+position : PositionConfig  -> List Css.Style
 position config =
     let
         map =

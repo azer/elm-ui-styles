@@ -19,11 +19,13 @@ module Styles.Length exposing (..)
 @docs columns
 @docs em
 @docs fr
+@docs len
 @docs pct
 @docs px
 @docs rem
 @docs repeat
 @docs rows
+@docs unset
 @docs vh
 
 # Internal
