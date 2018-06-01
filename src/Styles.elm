@@ -24,7 +24,9 @@ Making an element full-size, centering its content and making the text uppercase
 
 # Styling Reference
 
+@docs absolute
 @docs autoGrid
+@docs box
 @docs center
 @docs circle
 @docs cover
@@ -34,21 +36,38 @@ Making an element full-size, centering its content and making the text uppercase
 @docs easeout
 @docs equalGrid
 @docs fullscreen
-@docs defaultGrid
+@docs gap
 @docs grid
-@docs GridConfig
 @docs maxWidth
 @docs minWidth
 @docs maxWidth
 @docs minWidth
+@docs position
 @docs rainbow
+@docs relative
 @docs shadow
 @docs stretch
 @docs whitebg
 @docs whitefg
 
 
-# Helpers
+# Definition
+
+@docs BoxConfig
+@docs GapConfig
+@docs GridConfig
+@docs PositionConfig
+
+
+# Default Config
+
+@docs defaultBox
+@docs defaultGap
+@docs defaultGrid
+@docs defaultPosition
+
+
+# Proxy
 
 @docs toCSS
 
@@ -66,6 +85,14 @@ import Styles.Length as Length
 toCSS : List Css.Style -> Styled.Attribute msg
 toCSS list =
     Attributes.css list
+
+
+{-| Set position as absolute and pass position config
+-}
+absolute : PositionConfig -> List Css.Style -> List Css.Style
+absolute config list =
+    List.append list
+        ([ Css.position Css.absolute ] ++ (position config))
 
 
 {-| Create a grid with given number auto-sized columns. It's equivalent of;
@@ -207,6 +234,14 @@ easeout time list =
         ]
 
 
+{-| Set position as fixed and pass position config
+-}
+fixed : PositionConfig -> List Css.Style -> List Css.Style
+fixed config list =
+    List.append list
+        ([ Css.position Css.fixed ] ++ (position config))
+
+
 {-| Make the element stretch to the visible part of the screen.
 -}
 fullscreen : List Css.Style -> List Css.Style
@@ -237,24 +272,28 @@ type alias GapConfig =
 -}
 defaultGap : GapConfig
 defaultGap =
-    { inner = Length.auto
-    , innerTop = Length.auto
-    , innerRight = Length.auto
-    , innerBottom = Length.auto
-    , innerLeft = Length.auto
-    , outer = Length.auto
-    , outerTop = Length.auto
-    , outerRight = Length.auto
-    , outerBottom = Length.auto
-    , outerLeft = Length.auto
+    { inner = Length.unset
+    , innerTop = Length.unset
+    , innerRight = Length.unset
+    , innerBottom = Length.unset
+    , innerLeft = Length.unset
+    , outer = Length.unset
+    , outerTop = Length.unset
+    , outerRight = Length.unset
+    , outerBottom = Length.unset
+    , outerLeft = Length.unset
     }
 
 
 gap : GapConfig -> List Css.Style -> List Css.Style
 gap config list =
     let
-        map = List.map (\prop -> Css.property (.key prop) (Length.stringify (.value prop)))
-        filter = List.filter (\prop -> (.value prop) /= Length.auto)
+        map =
+            List.map (\prop -> Css.property (.key prop) (Length.stringify (.value prop)))
+
+        filter =
+            List.filter (\prop -> (.value prop) /= Length.unset)
+
         props =
             [ { key = "padding", value = .inner config }
             , { key = "padding-top", value = .innerTop config }
@@ -270,6 +309,7 @@ gap config list =
     in
         List.append list
             (map (filter props))
+
 
 {-| Options for constructing new grid
 -}
@@ -384,6 +424,43 @@ minWidth breakpoint styles list =
         ]
 
 
+type alias PositionConfig =
+    { top : Length.Length
+    , right : Length.Length
+    , bottom : Length.Length
+    , left : Length.Length
+    }
+
+
+{-| Default position config
+-}
+defaultPosition : PositionConfig
+defaultPosition =
+    { top = Length.unset
+    , right = Length.unset
+    , bottom = Length.unset
+    , left = Length.unset
+    }
+
+
+{-| Set position properties "top" "left" "right" and "bottom"
+-}
+position config =
+    let
+        map =
+            List.map (\prop -> Css.property (.key prop) (Length.stringify (.value prop)))
+
+        filter =
+            List.filter (\prop -> (.value prop) /= Length.unset)
+    in
+        (map << filter)
+            [ { key = "top", value = .top config }
+            , { key = "right", value = .left config }
+            , { key = "bottom", value = .bottom config }
+            , { key = "left", value = .left config }
+            ]
+
+
 {-| Add rainbow effect to the text.
 -}
 rainbow : List Css.Style -> List Css.Style
@@ -395,12 +472,36 @@ rainbow list =
         ]
 
 
+{-| Set position as relative and pass position config
+-}
+relative : PositionConfig -> List Css.Style -> List Css.Style
+relative config list =
+    List.append list
+        ([ Css.position Css.relative ] ++ (position config))
+
+
+{-| Set border as rounded with given pixels
+-}
+rounded : Float -> List Css.Style -> List Css.Style
+rounded pixels list =
+    List.append list
+        [ Css.borderRadius (Css.px pixels) ]
+
+
 {-| Add shadow with specified opacity.
 -}
 shadow : Float -> List Css.Style -> List Css.Style
 shadow opacity list =
     List.append list
         [ Css.property "box-shadow" ("0 0 4px 1px rgba(0,0,0," ++ (toString opacity) ++ ")") ]
+
+
+{-| Set position as sticky and pass position config
+-}
+sticky : PositionConfig -> List Css.Style -> List Css.Style
+sticky config list =
+    List.append list
+        ([ Css.position Css.sticky ] ++ (position config))
 
 
 {-| Stretch the element to fill available horizontal and vertical space. In the other words, set the width / height to 100%.
@@ -410,6 +511,7 @@ stretch list =
     List.append list
         [ Css.width (Css.pct 100)
         , Css.height (Css.pct 100)
+        , Css.boxSizing Css.borderBox
         ]
 
 

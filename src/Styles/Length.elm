@@ -39,6 +39,7 @@ type Length
     | Em Float
     | Fr Float
     | Multiple (List Length)
+    | Unset
     | Pct Float
     | Px Float
     | Rem Float
@@ -70,6 +71,12 @@ fr : Float -> Length
 fr n =
     Fr n
 
+{-| Alias function for constructing list of lengths -}
+len : List Length -> Length
+len list =
+    Multiple list
+
+
 {-| Returns an percent length for given number -}
 pct : Float -> Length
 pct n =
@@ -94,6 +101,10 @@ repeat n len =
 rows : List Length -> Length
 rows list =
     Multiple list
+
+{-| Marks the property as unset -}
+unset : Length
+unset = Unset
 
 {-| Returns vh length for given number. -}
 vh : Float -> Length
@@ -134,6 +145,9 @@ stringify len =
 
         Pct n ->
             (toString n) ++ "%"
+
+        Unset ->
+            ""
 
         Auto ->
             "auto"
