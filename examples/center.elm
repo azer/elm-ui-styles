@@ -1,6 +1,6 @@
 module Main exposing (..)
 
-import Styles exposing (toCSS, center, stretch)
+nnnimport Styles exposing (toCSS, center, stretch)
 import Html.Styled exposing (div, text)
 import List
 

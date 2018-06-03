@@ -40,21 +40,25 @@ Making an element full-size, centering its content and making the text uppercase
 @docs gap
 @docs grid
 @docs maxWidth
+@docs monospace
 @docs minWidth
 @docs position
 @docs rainbow
 @docs relative
 @docs rounded
+@docs sans
+@docs serif
 @docs shadow
 @docs sticky
 @docs stretch
+@docs transparentBg
+@docs typography
 @docs whitebg
 @docs whitefg
 
 
 # Definition
 
-@docs BoxConfig
 @docs GapConfig
 @docs GridConfig
 @docs PositionConfig
@@ -63,6 +67,7 @@ Making an element full-size, centering its content and making the text uppercase
 # Default Config
 
 @docs defaultBox
+@docs defaultTypo
 @docs defaultGap
 @docs defaultGrid
 @docs defaultPosition
@@ -79,7 +84,8 @@ import Css.Media
 import Html.Styled.Attributes as Attributes
 import Html.Styled as Styled
 import Styles.Length as Length
-
+import Styles.Typography as Typography
+import Styles.Box as Box
 
 {-| Proxy function to `Html.Styled.Attributes.css`
 -}
@@ -105,55 +111,41 @@ autoGrid : Int -> List Css.Style -> List Css.Style
 autoGrid n list =
     grid { defaultGrid | columns = Length.repeat n Length.auto } list
 
-
-{-| Options for creating a new element.
--}
-type alias BoxConfig =
-    { size : Length.Length
-    , width : Length.Length
-    , height : Length.Length
-    , bg : Css.Color
-    , fg : Css.Color
-    }
-
-
 {-| Default box config
 -}
-defaultBox : BoxConfig
+defaultBox : Box.Config
 defaultBox =
-    { size = Length.auto
-    , width = Length.auto
-    , height = Length.auto
-    , bg = Css.hex "#fff"
-    , fg = Css.hex "#000"
+    { size = Length.unset
+    , width = Length.unset
+    , height = Length.unset
+    , bg = Css.hex ""
+    , fg = Css.hex ""
     }
-
 
 {-| Create a new box element with given config
 -}
-box : BoxConfig -> List Css.Style -> List Css.Style
+box : Box.Config -> List Css.Style -> List Css.Style
 box config list =
     let
         width =
-            if config.width == Length.auto then
+            if config.width == Length.unset then
                 config.size
             else
                 config.width
 
         height =
-            if config.height == Length.auto then
+            if config.height == Length.unset then
                 config.size
             else
                 config.height
     in
         List.append list
             [ Css.boxSizing Css.borderBox
-            , Css.display Css.block
-            , Css.property "width" (Length.stringify width)
-            , Css.property "height" (Length.stringify height)
-            , Css.backgroundColor config.bg
-            , Css.color config.fg
             ]
+            ++ (if width /= Length.unset then [ Css.property "width" (Length.stringify width) ] else [])
+            ++ (if height /= Length.unset then [ Css.property "height" (Length.stringify width) ] else [])
+            ++ (if .value config.bg /= "#" then [ Css.backgroundColor config.bg ] else [])
+            ++ (if .value config.fg /= "#" then [ Css.color config.fg ] else [])
 
 
 {-| Centers inside the content.
@@ -425,6 +417,10 @@ minWidth breakpoint styles list =
             styles
         ]
 
+{-| Set typography as monospace, proxying other typography options -}
+monospace : Typography.Config -> List Css.Style -> List Css.Style
+monospace config list =
+    typography { config | family = ["Menlo", "Inconsolata", "Fira Mono", "Noto Mono", "Droid Sans Mono", "Consolas", "monaco" , "monospace"] } list
 
 {-| Config for setting position. -}
 type alias PositionConfig =
@@ -486,11 +482,21 @@ relative config list =
 
 {-| Set border as rounded with given pixels
 -}
-rounded : Float -> List Css.Style -> List Css.Style
-rounded pixels list =
+rounded : Length.Length -> List Css.Style -> List Css.Style
+rounded len list =
     List.append list
-        [ Css.borderRadius (Css.px pixels) ]
+        [ Css.property "border-radius" (Length.stringify len) ]
 
+
+{-| Set typography family as sans, proxying other typography options -}
+sans : Typography.Config -> List Css.Style -> List Css.Style
+sans config list =
+    typography { config | family = ["-apple-system", "BlinkMacSystemTypography", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "sans-serif"] } list
+
+{-| Set typography family as serif, proxying other typography options -}
+serif : Typography.Config -> List Css.Style  -> List Css.Style
+serif config list =
+    typography { config | family = ["Apple Garamond", "Baskerville", "Times New Roman", "Droid Serif", "Times", "Source Serif Pro", "serif"] } list
 
 {-| Add shadow with specified opacity.
 -}
@@ -512,12 +518,26 @@ sticky config list =
 -}
 stretch : List Css.Style -> List Css.Style
 stretch list =
+    box { defaultBox | size = Length.pct 100 } list
+
+{-| Shortcut for setting background as transparent
+-}
+transparentBg : List Css.Style -> List Css.Style
+transparentBg list =
     List.append list
-        [ Css.width (Css.pct 100)
-        , Css.height (Css.pct 100)
-        , Css.boxSizing Css.borderBox
+        [ Css.backgroundColor Css.transparent
         ]
 
+
+{-| Default typography config -}
+defaultTypo : Typography.Config
+defaultTypo =
+    Typography.defaultConfig
+
+{-| Set typography options -}
+typography : Typography.Config -> List Css.Style -> List Css.Style
+typography config list =
+    List.append list (Typography.css config)
 
 {-| Shortcut for setting background color as white
 -}

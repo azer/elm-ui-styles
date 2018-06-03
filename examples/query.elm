@@ -9,7 +9,7 @@ import Css exposing (backgroundColor, hex)
 main =
     div
         [ [ backgroundColor (hex "#cc0000") ]
-            |> ifMinWidth 500 [ backgroundColor (hex "#38C172") ]
+            |> minWidth 500 [ backgroundColor (hex "#38C172") ]
             |> css
         ]
         [ text "hello world" ]

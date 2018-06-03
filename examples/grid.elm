@@ -21,4 +21,4 @@ main =
 
 
 bg color =
-    css [ backgroundColor (hex color) ]
+    toCSS [ backgroundColor (hex color) ]
