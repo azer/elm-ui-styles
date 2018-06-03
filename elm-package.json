@@ -1,5 +1,5 @@
 {
-    "version": "3.0.0",
+    "version": "3.0.1",
     "summary": "Minimalist UI library for elm-css, inspired by Tachyons.",
     "repository": "https://github.com/azer/elm-ui-styles.git",
     "license": "BSD3",
