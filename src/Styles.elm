@@ -41,6 +41,8 @@ Making an element full-size, centering its content and making the text uppercase
 @docs grid
 @docs maxWidth
 @docs monospace
+@docs noborder
+@docs nooutline
 @docs minWidth
 @docs position
 @docs rainbow
@@ -60,7 +62,6 @@ Making an element full-size, centering its content and making the text uppercase
 # Definition
 
 @docs GapConfig
-@docs GridConfig
 @docs PositionConfig
 
 
@@ -86,6 +87,8 @@ import Html.Styled as Styled
 import Styles.Length as Length
 import Styles.Typography as Typography
 import Styles.Box as Box
+import Styles.Grid as Grid
+
 
 {-| Proxy function to `Html.Styled.Attributes.css`
 -}
@@ -115,37 +118,13 @@ autoGrid n list =
 -}
 defaultBox : Box.Config
 defaultBox =
-    { size = Length.unset
-    , width = Length.unset
-    , height = Length.unset
-    , bg = Css.hex ""
-    , fg = Css.hex ""
-    }
+    Box.defaultConfig
 
 {-| Create a new box element with given config
 -}
 box : Box.Config -> List Css.Style -> List Css.Style
 box config list =
-    let
-        width =
-            if config.width == Length.unset then
-                config.size
-            else
-                config.width
-
-        height =
-            if config.height == Length.unset then
-                config.size
-            else
-                config.height
-    in
-        List.append list
-            [ Css.boxSizing Css.borderBox
-            ]
-            ++ (if width /= Length.unset then [ Css.property "width" (Length.stringify width) ] else [])
-            ++ (if height /= Length.unset then [ Css.property "height" (Length.stringify width) ] else [])
-            ++ (if .value config.bg /= "#" then [ Css.backgroundColor config.bg ] else [])
-            ++ (if .value config.fg /= "#" then [ Css.color config.fg ] else [])
+    List.append list (Box.css config)
 
 
 {-| Centers inside the content.
@@ -260,6 +239,32 @@ type alias GapConfig =
     , outerLeft : Length.Length
     }
 
+{-| Default Grid.Config
+-}
+defaultGrid : Grid.Config
+defaultGrid = Grid.default
+
+{-| Helper for creating CSS3 grid layouts. It takes a `GridConfig` type of record
+and returns list of styles that you can pass to elm-css.
+
+        import Styles exposing (grid, defaultGrid)
+        import Styles.Length exposing (Pct)
+        import Css exposing (css)
+
+        main =
+           let
+             config = { defaultGrid | columns = List [Pct 30, Auto, Pct 30] }
+           in
+             div [ css (grid config []) ]
+                 [ div [] [text "left (30%)"]
+                 , div [] [text "center (auto)"]
+                 , div [] [text "right (30%)"]
+                 ]
+
+-}
+grid : Grid.Config -> List Css.Style -> List Css.Style
+grid config list =
+    List.append list (Grid.css config)
 
 {-| Default gap config
 -}
@@ -304,59 +309,6 @@ gap config list =
         List.append list
             (map (filter props))
 
-
-{-| Options for constructing new grid
--}
-type alias GridConfig =
-    { columns : Length.Length
-    , rows : Length.Length
-    , columnGap : Length.Length
-    , rowGap : Length.Length
-    }
-
-
-{-| Default GridConfig
--}
-defaultGrid : GridConfig
-defaultGrid =
-    { columns = Length.auto
-    , rows = Length.auto
-    , columnGap = Length.rem 1
-    , rowGap = Length.rem 1
-    }
-
-
-{-| Helper for creating CSS3 grid layouts. It takes a `GridConfig` type of record
-and returns list of styles that you can pass to elm-css.
-
-        import Styles exposing (grid, defaultGrid)
-        import Styles.Length exposing (Pct)
-        import Css exposing (css)
-
-        main =
-           let
-             config = { defaultGrid | columns = List [Pct 30, Auto, Pct 30] }
-           in
-             div [ css (grid config []) ]
-                 [ div [] [text "left (30%)"]
-                 , div [] [text "center (auto)"]
-                 , div [] [text "right (30%)"]
-                 ]
-
--}
-grid : GridConfig -> List Css.Style -> List Css.Style
-grid config list =
-    List.append list
-        [ Css.property "display" "grid"
-        , Css.property "grid-template-columns" (Length.stringify config.columns)
-        , Css.property "grid-template-rows" (Length.stringify config.rows)
-        , Css.property "grid-column-gap" (Length.stringify config.columnGap)
-        , Css.property "grid-row-gap" (Length.stringify config.rowGap)
-        , Css.property "justify-items" "stretch"
-        , Css.property "align-items" "stretch"
-        ]
-
-
 {-| Shortcut for creating a grid with given number equal-sized columns. It's equivalent of;
 
         grid { defaultGrid | columns = Length.repeat n (Length.fr 1) }
@@ -385,6 +337,7 @@ equalGrid n list =
                 |> Html.Styled.toUnstyled
 
 -}
+
 maxWidth : Float -> List Css.Style -> List Css.Style -> List Css.Style
 maxWidth breakpoint styles list =
     List.append list
@@ -430,6 +383,17 @@ type alias PositionConfig =
     , left : Length.Length
     }
 
+{-| Remove the borders -}
+noborder : List Css.Style -> List Css.Style
+noborder list =
+    List.append list
+        [ Css.property "border" "none" ]
+
+{-| Remove the outlines -}
+nooutline : List Css.Style -> List Css.Style
+nooutline list =
+    List.append list
+        [ Css.property "outline" "none" ]
 
 {-| Default position config
 -}
@@ -503,7 +467,7 @@ serif config list =
 shadow : Float -> List Css.Style -> List Css.Style
 shadow opacity list =
     List.append list
-        [ Css.property "box-shadow" ("0 0 4px 1px rgba(0,0,0," ++ (toString opacity) ++ ")") ]
+        [ Css.property "box-shadow" ("0 1px 3px 0 rgba(0,0,0," ++ (toString opacity) ++ ")") ]
 
 
 {-| Set position as sticky and pass position config

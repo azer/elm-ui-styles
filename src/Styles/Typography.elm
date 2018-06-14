@@ -26,7 +26,7 @@ type alias Config =
     , lowercase : Bool
     , capitalize : Bool
     , ellipsis : Bool
-    , charSpacing : Int
+    , letterSpacing : Length.Length
     , fg : Css.Color
     , bg : Css.Color
     }
@@ -42,7 +42,7 @@ defaultConfig =
     , lowercase = False
     , capitalize = False
     , ellipsis = False
-    , charSpacing = 0
+    , letterSpacing = Length.unset
     , fg = Css.hex ""
     , bg = Css.hex ""
     }
@@ -52,9 +52,9 @@ css : Config -> List Css.Style
 css config  =
     []
     ++ (if List.length config.family == 0 then [] else [ Css.fontFamilies config.family ])
-    ++ (if config.weight == 0 then [] else [ Css.property "typography-weight" (toString config.weight) ])
-    ++ (if config.charSpacing == 0 then [] else [ Css.property "letter-spacing" (toString config.charSpacing) ])
-    ++ (if config.size == Length.unset then [] else [ Css.property "typography-size" (Length.stringify config.size) ])
+    ++ (if config.weight == 0 then [] else [ Css.property "font-weight" (toString config.weight) ])
+    ++ (if config.letterSpacing == Length.unset then [] else [ Css.property "letter-spacing" (Length.stringify config.letterSpacing) ])
+    ++ (if config.size == Length.unset then [] else [ Css.property "font-size" (Length.stringify config.size) ])
     ++ (if config.height == Length.unset then [] else [ Css.property "line-height" (Length.stringify config.height ) ])
     ++ (if config.uppercase == False then [] else [ Css.textTransform Css.uppercase ])
     ++ (if config.lowercase == False then [] else [ Css.textTransform Css.lowercase ])

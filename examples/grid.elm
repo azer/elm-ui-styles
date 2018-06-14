@@ -2,6 +2,7 @@ module Main exposing (..)
 
 import Styles exposing (..)
 import Styles.Length exposing (columns, px, pct, auto)
+import Styles.Align as Align
 import Html.Styled exposing (div, text)
 import Css exposing (backgroundColor, hex)
 import List
