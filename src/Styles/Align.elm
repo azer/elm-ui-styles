@@ -2,7 +2,7 @@ module Styles.Align exposing (..)
 
 {-| Unfortunately elm-css doesn't expose its types, so, here we are.
 
-# Definition
+# Functions
 
 @docs unset
 @docs left
@@ -11,8 +11,17 @@ module Styles.Align exposing (..)
 @docs justify
 @docs justifyAll
 @docs start
+@docs stretch
 @docs end
 @docs matchParent
+
+# Definition
+
+@docs Align
+
+# Internal Functions
+
+@docs stringify
 
 -}
 

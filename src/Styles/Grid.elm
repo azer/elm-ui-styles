@@ -1,5 +1,18 @@
 module Styles.Grid exposing (..)
 
+{-| Create grid layouts.
+
+# Functions
+
+@docs default
+@docs css
+
+# Definition
+
+@docs Config
+
+-}
+
 import Css
 import Styles.Length as Length
 import Styles.Align as Align
@@ -28,23 +41,8 @@ default =
     }
 
 
-{-| Helper for creating CSS3 grid layouts. It takes a `GridConfig` type of record
+{-| Helper for creating CSS3 grid layouts. It takes a `Config` type of record
 and returns list of styles that you can pass to elm-css.
-
-        import Styles exposing (grid, defaultGrid)
-        import Styles.Length exposing (Pct)
-        import Css exposing (css)
-
-        main =
-           let
-             config = { defaultGrid | columns = List [Pct 30, Auto, Pct 30] }
-           in
-             div [ css (grid config []) ]
-                 [ div [] [text "left (30%)"]
-                 , div [] [text "center (auto)"]
-                 , div [] [text "right (30%)"]
-                 ]
-
 -}
 css : Config -> List Css.Style
 css config =

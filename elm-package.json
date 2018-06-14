@@ -1,5 +1,5 @@
 {
-    "version": "3.0.1",
+    "version": "4.0.0",
     "summary": "Minimalist UI library for elm-css, inspired by Tachyons.",
     "repository": "https://github.com/azer/elm-ui-styles.git",
     "license": "BSD3",
@@ -12,7 +12,8 @@
         "Styles.Box",
         "Styles.Color",
         "Styles.Typography",
-        "Styles.Border"
+        "Styles.Border",
+        "Styles.Align"
     ],
     "dependencies": {
         "elm-lang/core": "5.1.1 <= v < 6.0.0",
