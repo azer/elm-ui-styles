@@ -16,14 +16,18 @@ module Styles.Length exposing (..)
 
 @docs around
 @docs auto
+@docs autofill
+@docs autofit
 @docs columns
 @docs em
 @docs fr
 @docs len
+@docs minmax
 @docs pct
 @docs px
 @docs rem
 @docs repeat
+@docs repeatN
 @docs rows
 @docs unset
 @docs vh
@@ -38,14 +42,18 @@ module Styles.Length exposing (..)
 {-| Union type for all kinds of lengths -}
 type Length
     = Auto
+    | AutoFill
+    | AutoFit
     | Em Float
     | Fr Float
+    | Minmax (List Length)
     | Multiple (List Length)
     | Unset
     | Pct Float
     | Px Float
     | Rem Float
-    | Repeat Int Length
+    | Repeat Length Length
+    | RepeatN Int Length
     | Vh Float
 
 {-| Alias function for constructing list of lengths -}
@@ -57,6 +65,16 @@ around list =
 auto : Length
 auto =
     Auto
+
+{-| Alias function for auto-fill -}
+autofill : Length
+autofill =
+    AutoFill
+
+{-| Alias function for auto-fit -}
+autofit : Length
+autofit =
+    AutoFit
 
 {-| Alias function for constructing list of lengths -}
 columns : List Length -> Length
@@ -78,6 +96,10 @@ len : List Length -> Length
 len list =
     Multiple list
 
+{-| Alias function for constructing minmax(, ...) -}
+minmax : List Length -> Length
+minmax list =
+    Minmax list
 
 {-| Returns an percent length for given number -}
 pct : Float -> Length
@@ -94,10 +116,15 @@ rem : Float -> Length
 rem n =
     Rem n
 
+{-| Repeat two lengths -}
+repeat : Length -> Length -> Length
+repeat a b =
+    Repeat a b
+
 {-| Returns repeat of given length. -}
-repeat : Int -> Length -> Length
-repeat n len =
-    Repeat n len
+repeatN : Int -> Length -> Length
+repeatN n len =
+    RepeatN n len
 
 {-| Alias function for constructing list of lengths -}
 rows : List Length -> Length
@@ -124,11 +151,23 @@ vh n =
 stringify : Length -> String
 stringify len =
     case len of
+        Minmax all ->
+            "minmax(" ++ (String.join "," (List.map stringify all)) ++ ")"
+
         Multiple all ->
             String.join " " (List.map stringify all)
 
-        Repeat n len ->
+        Repeat a b ->
+            "repeat(" ++ (stringify a) ++ "," ++ (stringify b) ++ ")"
+
+        RepeatN n len ->
             "repeat(" ++ (toString n) ++ "," ++ (stringify len) ++ ")"
+
+        AutoFill ->
+            "auto-fill"
+
+        AutoFit ->
+            "auto-fit"
 
         Px n ->
             (toString n) ++ "px"

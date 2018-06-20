@@ -8,6 +8,8 @@ module Styles.Align exposing (..)
 @docs left
 @docs right
 @docs center
+@docs flexStart
+@docs flexEnd
 @docs justify
 @docs justifyAll
 @docs start
@@ -36,6 +38,8 @@ type Align
     | Start
     | Stretch
     | End
+    | FlexStart
+    | FlexEnd
     | MatchParent
 
 {-| unset -}
@@ -84,6 +88,16 @@ end : Align
 end =
     End
 
+{-| FlexStart -}
+flexStart : Align
+flexStart =
+    FlexStart
+
+{-| FlexEnd -}
+flexEnd : Align
+flexEnd =
+    FlexEnd
+
 {-| MatchParent -}
 matchParent : Align
 matchParent =
@@ -111,6 +125,12 @@ stringify align =
 
         Center ->
             "center"
+
+        FlexStart ->
+            "flex-start"
+
+        FlexEnd ->
+            "flex-end"
 
         Justify ->
             "justify"

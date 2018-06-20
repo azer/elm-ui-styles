@@ -36,6 +36,7 @@ Making an element full-size, centering its content and making the text uppercase
 @docs easeout
 @docs equalGrid
 @docs fixed
+@docs flex
 @docs fullscreen
 @docs gap
 @docs grid
@@ -68,10 +69,11 @@ Making an element full-size, centering its content and making the text uppercase
 # Default Config
 
 @docs defaultBox
-@docs defaultTypo
+@docs defaultFlex
 @docs defaultGap
 @docs defaultGrid
 @docs defaultPosition
+@docs defaultTypo
 
 
 # Proxy
@@ -112,7 +114,7 @@ absolute config list =
 -}
 autoGrid : Int -> List Css.Style -> List Css.Style
 autoGrid n list =
-    grid { defaultGrid | columns = Length.repeat n Length.auto } list
+    grid { defaultGrid | columns = Length.repeatN n Length.auto } list
 
 {-| Default box config
 -}
@@ -213,6 +215,18 @@ fixed config list =
     List.append list
         ([ Css.position Css.fixed ] ++ (position config))
 
+{-| Default flex box config
+-}
+defaultFlex : Box.Config
+defaultFlex =
+    let
+        default = Box.defaultConfig
+    in
+        { default | flex = True }
+
+{-| Create a new element with flex display -}
+flex : Box.Config -> List Css.Style -> List Css.Style
+flex config list = box config list
 
 {-| Make the element stretch to the visible part of the screen.
 -}
@@ -316,7 +330,7 @@ gap config list =
 -}
 equalGrid : Int -> List Css.Style -> List Css.Style
 equalGrid n list =
-    grid { defaultGrid | columns = Length.repeat n (Length.fr 1) } list
+    grid { defaultGrid | columns = Length.repeatN n (Length.fr 1) } list
 
 
 {-| Media query shortcut for defining styles that depend on maximum screen width (pixels).
